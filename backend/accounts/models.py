@@ -11,7 +11,7 @@ class User(AbstractUser):
         help_text=_("Required. please enter a valid email address."),
         blank=False,
     )
-    birthdate = models.DateField(_("Birthday"), blank=True)
+    birthdate = models.DateField(_("Birthday"), blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
