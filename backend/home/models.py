@@ -58,7 +58,7 @@ class Home(models.Model):
         verbose_name_plural = _("Homes")
 
     def __str__(self):
-        return f"Home:{self.id}"
+        return f"{self.alias_name}|Id:{self.id}"
 
 
 class Controller(models.Model):
