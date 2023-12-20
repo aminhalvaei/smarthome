@@ -24,7 +24,7 @@ class City(models.Model):
 
 
 class Location(models.Model):
-    city_id = models.ForeignKey(City, on_delete=models.SET_NULL, blank=False, null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=False, null=True)
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=False, null=False
     )
@@ -41,8 +41,15 @@ class Location(models.Model):
 
 
 class Home(models.Model):
-    User_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
-    loc_id = models.ForeignKey(
+    alias_name = models.CharField(
+        _("Home name"),
+        max_length=128,
+        blank=True,
+        null=True,
+        help_text=_("Optional user defined name for a home"),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, blank=False, null=True
     )
 
@@ -63,7 +70,7 @@ class Controller(models.Model):
         blank=False,
         null=False,
     )
-    home_id = models.ForeignKey(Home, on_delete=models.CASCADE, blank=False, null=False)
+    home = models.ForeignKey(Home, on_delete=models.CASCADE, blank=False, null=False)
     alias_name = models.CharField(
         _("Controller name"),
         max_length=128,
@@ -98,7 +105,7 @@ class Device(models.Model):
             blank=False,
             null=False,
     )
-    controller_id = models.ForeignKey(
+    controller = models.ForeignKey(
         Controller, on_delete=models.CASCADE, blank=False, null=False
     )
     alias_name = models.CharField(
