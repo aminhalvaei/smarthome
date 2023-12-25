@@ -24,15 +24,17 @@ class Parameter(models.Model):
     category = models.ForeignKey(
         ParameterCategory, on_delete=models.SET_NULL, blank=False, null=True
     )
-    is_setable = models.BooleanField(blank=True, null=True)
+    is_setable = models.BooleanField(blank=True, null=False)
     is_indoor = models.BooleanField(blank=False, null=False)
 
     class Meta:
         verbose_name = "Parameter"
         verbose_name_plural = "Parameters"
+        unique_together = ("title", "is_setable", "is_indoor")
+        
 
     def __str__(self):
-        return self.title
+        return f"{self.title}|{self.id}"
 
 
 class Preference(models.Model):
@@ -71,7 +73,7 @@ class Config(models.Model):
         verbose_name_plural = "Configs"
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
 
 class WeatherCondition(models.Model):
@@ -84,7 +86,7 @@ class WeatherCondition(models.Model):
         verbose_name_plural = "Weather Conditions"
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
 
 class ParameterValue(models.Model):
@@ -95,9 +97,10 @@ class ParameterValue(models.Model):
     class Meta:
         verbose_name = "Parameter Value"
         verbose_name_plural = "Parameter Values"
+        unique_together = ("weather_condition", "parameter")
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
 
 class ControllerStatus(models.Model):
@@ -111,17 +114,19 @@ class ControllerStatus(models.Model):
         verbose_name_plural = "Controller Statuses"
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
 
 class StatusValue(models.Model):
-    controllerstatus = models.ForeignKey(ControllerStatus, on_delete=models.CASCADE)
+    controller_status = models.ForeignKey(ControllerStatus, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     value = models.IntegerField()
 
     class Meta:
         verbose_name = "Status Value"
         verbose_name_plural = "Status Values"
+        unique_together = ("controller_status", "parameter")
+        
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
