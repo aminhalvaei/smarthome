@@ -4,6 +4,7 @@ from .models import City, Location, Home, Controller, Device
 
 # Register your models here.
 
+
 class ControllerAdmin(admin.ModelAdmin):
     model = Controller
     list_display = [
@@ -15,10 +16,9 @@ class ControllerAdmin(admin.ModelAdmin):
         "is_registered",
     ]
 
+
 admin.site.register(City)
 admin.site.register(Location)
 admin.site.register(Home)
 admin.site.register(Controller, ControllerAdmin)
 admin.site.register(Device)
-
-

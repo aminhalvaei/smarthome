@@ -98,13 +98,13 @@ class Controller(models.Model):
 
 
 class Device(models.Model):
-    physical_id =  models.CharField(
-            _("Physical id of Device"),
-            max_length=12,
-            unique=True,
-            db_index=True,
-            blank=False,
-            null=False,
+    physical_id = models.CharField(
+        _("Physical id of Device"),
+        max_length=12,
+        unique=True,
+        db_index=True,
+        blank=False,
+        null=False,
     )
     controller = models.ForeignKey(
         Controller, on_delete=models.CASCADE, blank=False, null=False
