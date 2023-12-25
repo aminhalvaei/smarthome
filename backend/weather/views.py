@@ -46,6 +46,7 @@ class ParameterCategoryDetail(generics.RetrieveAPIView):
 
 # Controller views
 
+
 # Routine 1
 class WeatherConditionView(views.APIView):
     def get(self, request, *args, **kwargs):
@@ -78,6 +79,7 @@ class WeatherConditionView(views.APIView):
 
         # Return the data as JSON using JsonResponse
         return Response(response_data, status=status.HTTP_200_OK)
+
 
 # Routine 3
 class SetStatusView(views.APIView):

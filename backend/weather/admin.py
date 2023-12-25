@@ -13,6 +13,7 @@ from .models import (
 
 # Register your models here.
 
+
 class ParameterAdmin(admin.ModelAdmin):
     model = Parameter
     list_display = [
@@ -22,7 +23,8 @@ class ParameterAdmin(admin.ModelAdmin):
         "is_setable",
         "is_indoor",
     ]
-    
+
+
 class ParameterValueAdmin(admin.ModelAdmin):
     model = ParameterValue
     list_display = [
@@ -30,14 +32,16 @@ class ParameterValueAdmin(admin.ModelAdmin):
         "parameter",
         "value",
     ]
-    
+
+
 class ControllerStatusAdmin(admin.ModelAdmin):
     model = ControllerStatus
     list_display = [
         "controller",
         "is_pending",
     ]
-    
+
+
 class StatusValueAdmin(admin.ModelAdmin):
     model = StatusValue
     list_display = [
@@ -46,7 +50,8 @@ class StatusValueAdmin(admin.ModelAdmin):
         "value",
     ]
 
-admin.site.register(Parameter,ParameterAdmin)
+
+admin.site.register(Parameter, ParameterAdmin)
 admin.site.register(ParameterCategory)
 admin.site.register(Preference)
 admin.site.register(Config)

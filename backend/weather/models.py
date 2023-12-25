@@ -31,7 +31,6 @@ class Parameter(models.Model):
         verbose_name = "Parameter"
         verbose_name_plural = "Parameters"
         unique_together = ("title", "is_setable", "is_indoor")
-        
 
     def __str__(self):
         return f"{self.title}|{self.id}"
@@ -126,7 +125,6 @@ class StatusValue(models.Model):
         verbose_name = "Status Value"
         verbose_name_plural = "Status Values"
         unique_together = ("controller_status", "parameter")
-        
 
     def __str__(self):
         return f"{self.id}"
