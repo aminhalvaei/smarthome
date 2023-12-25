@@ -75,10 +75,9 @@ class Config(models.Model):
 
 
 class WeatherCondition(models.Model):
-    controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
+    controller = models.OneToOneField(Controller, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_manual = models.BooleanField(default=False, blank=True, null=False)
 
     class Meta:
         verbose_name = "Weather Condition"
@@ -94,8 +93,35 @@ class ParameterValue(models.Model):
     value = models.IntegerField()
 
     class Meta:
-        verbose_name = "ParameterValue"
-        verbose_name_plural = "ParameterValues"
+        verbose_name = "Parameter Value"
+        verbose_name_plural = "Parameter Values"
+
+    def __str__(self):
+        return self.id
+
+
+class ControllerStatus(models.Model):
+    controller = models.OneToOneField(Controller, on_delete=models.CASCADE)
+    is_pending = models.BooleanField(default=True, blank=True, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Controller Status"
+        verbose_name_plural = "Controller Statuses"
+
+    def __str__(self):
+        return self.id
+
+
+class StatusValue(models.Model):
+    controllerstatus = models.ForeignKey(ControllerStatus, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
+    value = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Status Value"
+        verbose_name_plural = "Status Values"
 
     def __str__(self):
         return self.id

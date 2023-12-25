@@ -78,6 +78,7 @@ class Controller(models.Model):
         null=True,
         help_text=_("Optional user defined name for a controller"),
     )
+    is_manual = models.BooleanField(default=False, blank=True, null=False)
     is_active = models.BooleanField(_("Activation status"), default=False, null=False)
     is_registered = models.BooleanField(
         _("Registration status"), default=False, null=False
