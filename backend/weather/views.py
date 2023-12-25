@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, Http404
 from rest_framework import generics, views, status
+from rest_framework.response import Response
 
 from .models import (
     Parameter,
@@ -14,7 +15,6 @@ from home.models import Controller
 from .serializers import (
     ParameterSerializer,
     ParameterCategorySerializer,
-    
     # controller
     WeatherRequestSerializer,
     SetStatusSerializer,
@@ -44,7 +44,7 @@ class ParameterCategoryDetail(generics.RetrieveAPIView):
     serializer_class = ParameterCategorySerializer
 
 
-# controller views
+# Controller views
 
 
 class WeatherConditionView(views.APIView):
@@ -77,12 +77,12 @@ class WeatherConditionView(views.APIView):
         }
 
         # Return the data as JSON using JsonResponse
-        return JsonResponse(response_data)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
-class SetStatusView(views.APIView): # TODO fix the bug here
+class SetStatusView(views.APIView):
     def post(self, request, *args, **kwargs):
-        serializer = SetStatusSerializer(data=request.query_params)
+        serializer = SetStatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         physical_id = serializer.validated_data["physical_id"]
 
@@ -93,9 +93,17 @@ class SetStatusView(views.APIView): # TODO fix the bug here
             if controller_status.is_pending is True:
                 controller_status.is_pending = False
                 controller_status.save()
-                return JsonResponse({"message": "Not pending anymore"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Pending flag successfully changed to false"},
+                    status=status.HTTP_200_OK,
+                )
             else:
-                return JsonResponse({"error": "It already is not pending"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Pending is already false"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         except ControllerStatus.DoesNotExist:
-            return JsonResponse({"error": "Object not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Object not found."}, status=status.HTTP_404_NOT_FOUND
+            )
