@@ -4,7 +4,7 @@ from datetime import timedelta
 # so it does not need to make an new api call to get weather
 WEATHER_VALID_DURATION = timedelta(milliseconds=5000)
 
-UNITS_OF_MEASUREMENT = 'metric'
+UNITS_OF_MEASUREMENT = "metric"
 
 CONSTANT_URL = "https://api.openweathermap.org/data/2.5/weather"
 

@@ -69,7 +69,7 @@ class WeatherConditionView(views.APIView):
                 parameters = ParameterValue.objects.filter(
                     weather_condition__controller__physical_id=physical_id
                 )
-            else: # here we need to get new data from api
+            else:  # here we need to get new data from api
                 self.update_weather_data(physical_id)
 
         # Prepare the JSON response
@@ -91,36 +91,32 @@ class WeatherConditionView(views.APIView):
         deadline = updated_at + configs.WEATHER_VALID_DURATION
         current = datetime.now()
         return deadline >= current
-    
+
     def update_weather_data(self, physical_id):
         location = Location.objects.get(home__controller__physical_id=physical_id)
         raw_new_data = self.make_api_request(location)
         processed_new_data = self.process_api_response(raw_new_data)
         # TODO continue from here you need to implement two functions process_api_response and insert_parameters
-        
-    
+
     def make_api_request(location):
         latitude, longitude = location.latitude, location.longitude
         unit = configs.UNITS_OF_MEASUREMENT
         api_key = configs.WEATHER_API_KEYS[0]
         constant_url = configs.CONSTANT_URL
-        
+
         api_url = f"{constant_url}?lat={latitude}&lon={longitude}&appid={api_key}&units={unit}"
-        
+
         response = requests.get(api_url)
-        
+
         return response.json()
-        
-    
+
     def process_api_response(raw_new_data):
-        pass 
+        pass
         # TODO
-        
+
     def insert_parameters(processed_new_data):
         pass
         # TODO
-        
-    
 
 
 # Routine 3
