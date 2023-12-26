@@ -76,7 +76,9 @@ class Config(models.Model):
 
 
 class WeatherCondition(models.Model):
-    controller = models.OneToOneField(Controller, on_delete=models.CASCADE)
+    controller = models.OneToOneField(
+        Controller, on_delete=models.CASCADE, related_name="weather_condition"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
