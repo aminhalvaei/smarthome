@@ -2,6 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, Http404
 from rest_framework import generics, views, status
 from rest_framework.response import Response
+from datetime import datetime
+import requests
+
+from .configs import WEATHER_VALID_DURATION
 
 from .models import (
     Parameter,
@@ -60,9 +64,14 @@ class WeatherConditionView(views.APIView):
                 controller_status__controller__physical_id=physical_id
             )
         else:
-            parameters = ParameterValue.objects.filter(
-                weather_condition__controller__physical_id=physical_id
-            )
+            latest_update = controller.weather_condition.updated_at
+            if self.is_weather_valid(latest_update):
+                parameters = ParameterValue.objects.filter(
+                    weather_condition__controller__physical_id=physical_id
+                )
+            else: # here we need to get new data from api
+                pass
+
             # TODO check if the stored data is expired and if it is make an api call to get and update data
 
         # Prepare the JSON response
@@ -79,6 +88,11 @@ class WeatherConditionView(views.APIView):
 
         # Return the data as JSON using JsonResponse
         return Response(response_data, status=status.HTTP_200_OK)
+
+    def is_weather_valid(updated_at):
+        deadline = updated_at + WEATHER_VALID_DURATION
+        current = datetime.now()
+        return deadline >= current
 
 
 # Routine 3
