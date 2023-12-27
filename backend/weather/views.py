@@ -149,6 +149,10 @@ class WeatherConditionView(views.APIView):
 
 
 # Routine 3
+# is_pending flag indicates that the controller_status
+# is not configured on controller yet
+# this view handles the responsibility to make this flag null
+# after getting acknoledgement from the controller
 class SetStatusView(views.APIView):
     def post(self, request, *args, **kwargs):
         serializer = SetStatusSerializer(data=request.data)
