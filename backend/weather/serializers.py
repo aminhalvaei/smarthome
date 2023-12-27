@@ -25,11 +25,3 @@ class ParameterCategorySerializer(serializers.ModelSerializer):
         )
 
         model = ParameterCategory
-
-
-class WeatherRequestSerializer(serializers.Serializer):
-    physical_id = serializers.CharField(max_length=12)
-
-
-class SetStatusSerializer(serializers.Serializer):
-    physical_id = serializers.CharField(max_length=12)

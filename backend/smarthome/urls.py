@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/weather/', include('weather.urls')),
     path('api/home/', include('home.urls')),
+    path('api/cservice/', include('cservice.urls')),
     path('api/authentication/', include('dj_rest_auth.urls')),
     path('api/authentication/registration/', include('dj_rest_auth.registration.urls')),
 ]

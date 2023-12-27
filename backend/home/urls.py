@@ -11,11 +11,6 @@ from .views import (
     ControllerDetail,
     DeviceList,
     DeviceDetail,
-    
-    # controller services
-    RegisterControllerView
-    
-    
 )
 
 urlpatterns = [
@@ -29,7 +24,4 @@ urlpatterns = [
     path("controllers/<int:pk>", ControllerDetail.as_view(), name="controller-detail"),
     path("devices/", DeviceList.as_view(), name="device-list"),
     path("devices/<int:pk>", DeviceDetail.as_view(), name="device-detail"),
-    
-    # controller services
-    path("register-controller/", RegisterControllerView.as_view(), name="register_controller_view"),
 ]
