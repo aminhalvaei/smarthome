@@ -1,0 +1,1713 @@
+openapi: 3.0.3
+info:
+  title: Smart Home API
+  version: 1.0.0
+  description: A basic smart home system design and its implementation using django
+    and react (maybe!)
+paths:
+  /api/authentication/login/:
+    post:
+      operationId: api_authentication_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/authentication/logout/:
+    post:
+      operationId: api_authentication_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/password/change/:
+    post:
+      operationId: api_authentication_password_change_create
+      description: |-
+        Calls Django Auth SetPasswordForm save method.
+
+        Accepts the following POST parameters: new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/password/reset/:
+    post:
+      operationId: api_authentication_password_reset_create
+      description: |-
+        Calls Django Auth PasswordResetForm save method.
+
+        Accepts the following POST parameters: email
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/password/reset/confirm/:
+    post:
+      operationId: api_authentication_password_reset_confirm_create
+      description: |-
+        Password reset e-mail link is confirmed, therefore
+        this resets the user's password.
+
+        Accepts the following POST parameters: token, uid,
+            new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/registration/:
+    post:
+      operationId: api_authentication_registration_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/authentication/registration/resend-email/:
+    post:
+      operationId: api_authentication_registration_resend_email_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/registration/verify-email/:
+    post:
+      operationId: api_authentication_registration_verify_email_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/authentication/user/:
+    get:
+      operationId: api_authentication_user_retrieve
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    put:
+      operationId: api_authentication_user_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    patch:
+      operationId: api_authentication_user_partial_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+  /api/cservice/register-controller/:
+    post:
+      operationId: api_cservice_register_controller_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterController'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterController'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterController'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterController'
+          description: ''
+  /api/cservice/set-status/:
+    post:
+      operationId: api_cservice_set_status_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/cservice/weather-condition/:
+    get:
+      operationId: api_cservice_weather_condition_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/home/cities/:
+    get:
+      operationId: api_home_cities_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+          description: ''
+    post:
+      operationId: api_home_cities_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/City'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/City'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/City'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+  /api/home/cities/{id}/:
+    get:
+      operationId: api_home_cities_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    put:
+      operationId: api_home_cities_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/City'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/City'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/City'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    patch:
+      operationId: api_home_cities_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    delete:
+      operationId: api_home_cities_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/home/controllers/:
+    get:
+      operationId: api_home_controllers_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Controller'
+          description: ''
+  /api/home/controllers/{id}:
+    get:
+      operationId: api_home_controllers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Controller'
+          description: ''
+    put:
+      operationId: api_home_controllers_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Controller'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Controller'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Controller'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Controller'
+          description: ''
+    patch:
+      operationId: api_home_controllers_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedController'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedController'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedController'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Controller'
+          description: ''
+  /api/home/devices/:
+    get:
+      operationId: api_home_devices_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+          description: ''
+  /api/home/devices/{id}:
+    get:
+      operationId: api_home_devices_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
+    put:
+      operationId: api_home_devices_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Device'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
+    patch:
+      operationId: api_home_devices_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDevice'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
+  /api/home/homes/:
+    get:
+      operationId: api_home_homes_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home'
+          description: ''
+    post:
+      operationId: api_home_homes_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Home'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Home'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Home'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+          description: ''
+  /api/home/homes/{id}:
+    get:
+      operationId: api_home_homes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+          description: ''
+    put:
+      operationId: api_home_homes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Home'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Home'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Home'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+          description: ''
+    patch:
+      operationId: api_home_homes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHome'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHome'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHome'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+          description: ''
+    delete:
+      operationId: api_home_homes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/home/locations/:
+    get:
+      operationId: api_home_locations_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+          description: ''
+    post:
+      operationId: api_home_locations_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Location'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Location'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+  /api/home/locations/{id}/:
+    get:
+      operationId: api_home_locations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    put:
+      operationId: api_home_locations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Location'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Location'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    patch:
+      operationId: api_home_locations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    delete:
+      operationId: api_home_locations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/weather/parameters/:
+    get:
+      operationId: api_weather_parameters_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parameter'
+          description: ''
+    post:
+      operationId: api_weather_parameters_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter'
+          description: ''
+  /api/weather/parameters-categories/:
+    get:
+      operationId: api_weather_parameters_categories_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParameterCategory'
+          description: ''
+  /api/weather/parameters-categories/{id}:
+    get:
+      operationId: api_weather_parameters_categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterCategory'
+          description: ''
+  /api/weather/parameters/{id}:
+    get:
+      operationId: api_weather_parameters_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter'
+          description: ''
+    put:
+      operationId: api_weather_parameters_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Parameter'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter'
+          description: ''
+    patch:
+      operationId: api_weather_parameters_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedParameter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedParameter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedParameter'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter'
+          description: ''
+    delete:
+      operationId: api_weather_parameters_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: City Name
+          maxLength: 128
+        country:
+          type: string
+          title: Country Name
+          maxLength: 64
+        province:
+          type: string
+          title: Province Name
+          maxLength: 128
+      required:
+      - country
+      - id
+      - name
+      - province
+    Controller:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        physical_id:
+          type: string
+          title: Physical id of Controller
+          maxLength: 12
+        home:
+          type: integer
+          nullable: true
+        alias_name:
+          type: string
+          nullable: true
+          title: Controller name
+          description: Optional user defined name for a controller
+          maxLength: 128
+        is_manual:
+          type: boolean
+        is_active:
+          type: boolean
+          title: Activation status
+        is_registered:
+          type: boolean
+          title: Registration status
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Creation date
+        registered_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: Registration date
+      required:
+      - created_at
+      - id
+      - physical_id
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        physical_id:
+          type: string
+          title: Physical id of Device
+          maxLength: 12
+        controller:
+          type: integer
+        alias_name:
+          type: string
+          nullable: true
+          title: Device name
+          description: Optional user defined name for a controller
+          maxLength: 128
+      required:
+      - controller
+      - id
+      - physical_id
+    Home:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        alias_name:
+          type: string
+          nullable: true
+          title: Home name
+          description: Optional user defined name for a home
+          maxLength: 128
+        user:
+          type: integer
+        location:
+          type: integer
+          nullable: true
+      required:
+      - id
+      - user
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        city:
+          type: integer
+          nullable: true
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+      required:
+      - id
+      - latitude
+      - longitude
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
+    Parameter:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Parameter title
+          maxLength: 128
+        unit:
+          type: string
+          title: Unit of measurment
+          maxLength: 64
+        category:
+          type: integer
+          nullable: true
+        is_setable:
+          type: boolean
+        is_indoor:
+          type: boolean
+      required:
+      - id
+      - is_indoor
+      - is_setable
+      - title
+      - unit
+    ParameterCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Category title
+          maxLength: 64
+      required:
+      - id
+      - title
+    PasswordChange:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+    PasswordReset:
+      type: object
+      description: Serializer for requesting a password reset e-mail.
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      description: Serializer for confirming a password reset attempt.
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - new_password1
+      - new_password2
+      - token
+      - uid
+    PatchedCity:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: City Name
+          maxLength: 128
+        country:
+          type: string
+          title: Country Name
+          maxLength: 64
+        province:
+          type: string
+          title: Province Name
+          maxLength: 128
+    PatchedController:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        physical_id:
+          type: string
+          title: Physical id of Controller
+          maxLength: 12
+        home:
+          type: integer
+          nullable: true
+        alias_name:
+          type: string
+          nullable: true
+          title: Controller name
+          description: Optional user defined name for a controller
+          maxLength: 128
+        is_manual:
+          type: boolean
+        is_active:
+          type: boolean
+          title: Activation status
+        is_registered:
+          type: boolean
+          title: Registration status
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Creation date
+        registered_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: Registration date
+    PatchedDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        physical_id:
+          type: string
+          title: Physical id of Device
+          maxLength: 12
+        controller:
+          type: integer
+        alias_name:
+          type: string
+          nullable: true
+          title: Device name
+          description: Optional user defined name for a controller
+          maxLength: 128
+    PatchedHome:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        alias_name:
+          type: string
+          nullable: true
+          title: Home name
+          description: Optional user defined name for a home
+          maxLength: 128
+        user:
+          type: integer
+        location:
+          type: integer
+          nullable: true
+    PatchedLocation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        city:
+          type: integer
+          nullable: true
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+    PatchedParameter:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Parameter title
+          maxLength: 128
+        unit:
+          type: string
+          title: Unit of measurment
+          maxLength: 64
+        category:
+          type: integer
+          nullable: true
+        is_setable:
+          type: boolean
+        is_indoor:
+          type: boolean
+    PatchedUserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+          description: Required. please enter a valid email address.
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+          minLength: 1
+        email:
+          type: string
+          format: email
+        password1:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - password1
+      - password2
+      - username
+    RegisterController:
+      type: object
+      properties:
+        physical_id:
+          type: string
+          title: Physical id of Controller
+          maxLength: 12
+      required:
+      - physical_id
+    ResendEmailVerification:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    Token:
+      type: object
+      description: Serializer for Token model.
+      properties:
+        key:
+          type: string
+          maxLength: 40
+      required:
+      - key
+    UserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+          description: Required. please enter a valid email address.
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - pk
+      - username
+    VerifyEmail:
+      type: object
+      properties:
+        key:
+          type: string
+          writeOnly: true
+      required:
+      - key
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

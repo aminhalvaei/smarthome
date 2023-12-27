@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'drf_spectacular',
 
     # local apps
     'accounts',
@@ -126,6 +127,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",  
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Smart Home API",
+    "DESCRIPTION": "A basic smart home system design and its implementation using django and react (maybe!)",
+    "VERSION": "1.0.0",
+    # OTHER SETTINGS
 }
 
 # Internationalization
