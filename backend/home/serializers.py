@@ -43,6 +43,11 @@ class ControllerSerializer(serializers.ModelSerializer):
             "physical_id",
             "home",
             "alias_name",
+            "is_manual",
+            "is_active",
+            "is_registered",
+            "created_at",
+            "registered_at",
         )
         model = Controller
 
@@ -56,3 +61,13 @@ class DeviceSerializer(serializers.ModelSerializer):
             "alias_name",
         )
         model = Device
+        
+        
+# controller services
+
+class RegisterControllerSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields= (
+            "physical_id",
+        )
+        model = Controller

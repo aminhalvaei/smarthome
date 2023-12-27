@@ -8,6 +8,9 @@ from .serializers import (
     HomeSerializer,
     ControllerSerializer,
     DeviceSerializer,
+    
+    # controller
+    RegisterControllerSerializer,
 )
 
 # Create your views here.
@@ -72,3 +75,10 @@ class DeviceList(generics.ListAPIView):
 class DeviceDetail(generics.RetrieveUpdateAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+
+# controller services
+
+class RegisterControllerView(generics.CreateAPIView):
+    queryset = Controller.objects.all()
+    serializer_class = RegisterControllerSerializer

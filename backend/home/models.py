@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime
 
 from accounts.models import User
 
@@ -70,7 +71,7 @@ class Controller(models.Model):
         blank=False,
         null=False,
     )
-    home = models.ForeignKey(Home, on_delete=models.CASCADE, blank=False, null=False)
+    home = models.ForeignKey(Home, on_delete=models.CASCADE, blank=True, null=True)
     alias_name = models.CharField(
         _("Controller name"),
         max_length=128,
@@ -83,10 +84,10 @@ class Controller(models.Model):
     is_registered = models.BooleanField(
         _("Registration status"), default=False, null=False
     )
-    created_at = models.DateTimeField(_("Creation date"), auto_now_add=True)
+    created_at = models.DateTimeField(_("Creation date"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Last update"), auto_now=True)
     registered_at = models.DateTimeField(
-        _("Registration date"), editable=False, null=True
+        _("Registration date"), null=True
     )
 
     class Meta:
