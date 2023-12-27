@@ -64,13 +64,16 @@ class WeatherConditionView(views.APIView):
                 controller_status__controller__physical_id=physical_id
             )
         else:
-            latest_update = controller.weather_condition.updated_at
-            if self.is_weather_valid(latest_update):
-                parameters = ParameterValue.objects.filter(
-                    weather_condition__controller__physical_id=physical_id
-                )
-            else:  # here we need to get new data from api
+            try:
+                latest_update = controller.weather_condition.updated_at
+                if not self.is_weather_valid(latest_update):
+                    self.update_weather_data(physical_id)
+            except:
                 self.update_weather_data(physical_id)
+
+            parameters = ParameterValue.objects.filter(
+                weather_condition__controller__physical_id=physical_id
+            )
 
         # Prepare the JSON response
         response_data = {
@@ -87,36 +90,62 @@ class WeatherConditionView(views.APIView):
         # Return the data as JSON using JsonResponse
         return Response(response_data, status=status.HTTP_200_OK)
 
-    def is_weather_valid(updated_at):
-        deadline = updated_at + configs.WEATHER_VALID_DURATION
-        current = datetime.now()
-        return deadline >= current
-
     def update_weather_data(self, physical_id):
         location = Location.objects.get(home__controller__physical_id=physical_id)
         raw_new_data = self.make_api_request(location)
-        processed_new_data = self.process_api_response(raw_new_data)
-        # TODO continue from here you need to implement two functions process_api_response and insert_parameters
+        parameters = self.process_api_response(raw_new_data)
+        self.insert_parameters(physical_id, parameters)
 
-    def make_api_request(location):
+    def make_api_request(self, location):
         latitude, longitude = location.latitude, location.longitude
         unit = configs.UNITS_OF_MEASUREMENT
         api_key = configs.WEATHER_API_KEYS[0]
         constant_url = configs.CONSTANT_URL
 
         api_url = f"{constant_url}?lat={latitude}&lon={longitude}&appid={api_key}&units={unit}"
-
         response = requests.get(api_url)
-
         return response.json()
 
-    def process_api_response(raw_new_data):
-        pass
-        # TODO
+    def process_api_response(self, raw_new_data):
+        parameters = dict()
+        parameters = raw_new_data["main"]
+        return parameters
 
-    def insert_parameters(processed_new_data):
-        pass
-        # TODO
+    def insert_parameters(self, physical_id, parameters):
+        # Retrieve or create WeatherCondition instance
+        weather_condition, created = WeatherCondition.objects.get_or_create(
+            controller__physical_id=physical_id,
+            defaults={"controller": Controller.objects.get(physical_id=physical_id)},
+        )
+
+        # Create or update ParameterValue instances
+        for parameter_title, parameter_value in parameters.items():
+            # Create or update ParameterValue instance
+            parameter, created = Parameter.objects.get_or_create(
+                title=parameter_title,
+                is_setable=False,
+                is_indoor=False,
+                defaults={
+                    "title": parameter_title,
+                    "unit": configs.UNITS_OF_MEASUREMENT,
+                    "category": ParameterCategory.objects.get(title="basic"),
+                    "is_setable": False,
+                    "is_indoor": False,
+                },
+            )
+            parameter_value_instance, created = ParameterValue.objects.update_or_create(
+                weather_condition=weather_condition,
+                parameter=parameter,
+                defaults={"value": parameter_value},
+            )
+
+        weather_condition.updated_at = datetime.now()
+        weather_condition.save()
+
+    def is_weather_valid(self, updated_at):
+        deadline = updated_at + configs.WEATHER_VALID_DURATION
+        current = datetime.now()
+        return deadline >= current
 
 
 # Routine 3
