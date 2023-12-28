@@ -10,3 +10,5 @@
 - Make a more consice and better system for units of measurement
 - handle the is_active and is_registered flags of controller so that if those flags are false for a controller it cant access the server and get weather_condition
 - specify tables that must have an initilization at the start of project all fill them with suitable values like PreferenceChoice and ParameterCategory
+- do sth for configs file enities and make them a db table if its possible
+- store weather infos like cloudy sunny ... in WeatherCondition table
