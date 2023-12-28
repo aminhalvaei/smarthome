@@ -42,14 +42,15 @@ class WeatherConditionView(views.APIView):
             )
         else:
             try:
-                latest_update = controller.weather_condition.updated_at
+                # TODO make this controller_status instead of weather_condition
+                latest_update = controller.controller_status.updated_at 
                 if not self.is_weather_valid(latest_update):
                     self.update_weather_data(physical_id)
             except:
                 self.update_weather_data(physical_id)
 
-            parameters = ParameterValue.objects.filter(
-                weather_condition__controller__physical_id=physical_id
+            parameters = StatusValue.objects.filter(
+                controller_status__controller__physical_id=physical_id
             )
 
         # Prepare the JSON response
@@ -71,7 +72,8 @@ class WeatherConditionView(views.APIView):
         location = Location.objects.get(home__controller__physical_id=physical_id)
         raw_new_data = self.make_api_request(location)
         parameters = self.process_api_response(raw_new_data)
-        self.insert_parameters(physical_id, parameters)
+        self.insert_to_weather_condition(physical_id, parameters)
+        self.insert_to_controller_status(physical_id, parameters)
 
     def make_api_request(self, location):
         latitude, longitude = location.latitude, location.longitude
@@ -88,7 +90,7 @@ class WeatherConditionView(views.APIView):
         parameters = raw_new_data["main"]
         return parameters
 
-    def insert_parameters(self, physical_id, parameters):
+    def insert_to_weather_condition(self, physical_id, parameters):
         # Retrieve or create WeatherCondition instance
         weather_condition, created = WeatherCondition.objects.get_or_create(
             controller__physical_id=physical_id,
@@ -119,10 +121,55 @@ class WeatherConditionView(views.APIView):
         weather_condition.updated_at = datetime.now()
         weather_condition.save()
 
+    def insert_to_controller_status(self, physical_id, parameters):
+        # Retrieve or create ControllerStatus instance
+        controller_status, created = ControllerStatus.objects.update_or_create(
+            controller__physical_id=physical_id,
+            defaults={
+                "controller": Controller.objects.get(physical_id=physical_id),
+                "is_pending": True,
+            },
+        )
+
+        setable_parameters = {
+            key: value
+            for key, value in parameters.items()
+            if key in configs.SETABLE_PARAMETERS
+        }
+
+        # Create or update StatusValue instances
+        for parameter_title, parameter_value in setable_parameters.items():
+            # Create or update StatusValue instance
+            parameter, created = Parameter.objects.get_or_create(
+                title=parameter_title,
+                is_setable=True,
+                is_indoor=True,
+                defaults={
+                    "title": parameter_title,
+                    "unit": configs.UNITS_OF_MEASUREMENT,
+                    "category": ParameterCategory.objects.get(title="basic"),
+                    "is_setable": True,
+                    "is_indoor": True,
+                },
+            )
+            set_value = self.calculator(parameter_title, parameter_value)
+            status_value_instance, created = StatusValue.objects.update_or_create(
+                controller_status=controller_status,
+                parameter=parameter,
+                defaults={"value": set_value},
+            )
+
+        controller_status.updated_at = datetime.now()
+        controller_status.save()
+
     def is_weather_valid(self, updated_at):
         deadline = updated_at + configs.WEATHER_VALID_DURATION
         current = datetime.now()
         return deadline >= current
+
+    def calculator(self, parameter_title, parameter_value):
+        return parameter_value * 100
+        # TODO complete this function and make mechanism that can retrive sutiable formula from a db
 
 
 # Routine 3

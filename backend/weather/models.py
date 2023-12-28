@@ -125,7 +125,7 @@ class ParameterValue(models.Model):
 
 
 class ControllerStatus(models.Model):
-    controller = models.OneToOneField(Controller, on_delete=models.CASCADE)
+    controller = models.OneToOneField(Controller, on_delete=models.CASCADE, related_name="controller_status")
     is_pending = models.BooleanField(default=True, blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
