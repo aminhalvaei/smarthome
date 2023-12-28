@@ -9,3 +9,4 @@
 - Make seperate files for client and controller services in project directory
 - Make a more consice and better system for units of measurement
 - handle the is_active and is_registered flags of controller so that if those flags are false for a controller it cant access the server and get weather_condition
+- specify tables that must have an initilization at the start of project all fill them with suitable values like PreferenceChoice and ParameterCategory
