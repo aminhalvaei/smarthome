@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 
 from smarthome.settings import AUTH_USER_MODEL as User
@@ -33,7 +34,7 @@ class Parameter(models.Model):
         unique_together = ("title", "is_setable", "is_indoor")
 
     def __str__(self):
-        return f"{self.title}|{self.id}"
+        return f"{self.title}|{self.is_setable}"
 
 
 class Preference(models.Model):
@@ -62,14 +63,33 @@ class Preference(models.Model):
             return f"{self.id}|{self.user.__str__()}"
 
 
+class PreferenceChoice(models.Model):
+    title = models.CharField(max_length=64, blank=False, null=False, unique=True)
+    impact = models.DecimalField(
+        max_digits=3,
+        decimal_places=0,
+        default=0,
+        unique=True,
+        validators=[MinValueValidator(-50), MaxValueValidator(100)],
+    )
+
+    class Meta:
+        verbose_name = "Preference Choice"
+        verbose_name_plural = "Preference Choices"
+
+    def __str__(self):
+        return self.title
+
+
 class Config(models.Model):
     preference = models.ForeignKey(Preference, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
-    value = models.IntegerField()
+    value = models.ForeignKey(PreferenceChoice, on_delete=models.CASCADE, related_name="config")
 
     class Meta:
         verbose_name = "Config"
         verbose_name_plural = "Configs"
+        unique_together = ("preference", "parameter",)
 
     def __str__(self):
         return f"{self.id}"

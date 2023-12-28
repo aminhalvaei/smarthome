@@ -4,6 +4,7 @@ from .models import (
     Parameter,
     ParameterCategory,
     Preference,
+    PreferenceChoice,
     Config,
     WeatherCondition,
     ParameterValue,
@@ -24,6 +25,26 @@ class ParameterAdmin(admin.ModelAdmin):
         "is_indoor",
     ]
 
+
+class PreferenceAdmin(admin.ModelAdmin):
+    model = Preference
+    list_display = [
+        "user",
+        "alias_name",
+    ]
+
+
+class PreferenceChoiceAdmin(admin.ModelAdmin):
+    model = PreferenceChoice
+    list_display = ["title", "impact"]
+    
+class ConfigAdmin(admin.ModelAdmin):
+    model = Config
+    list_display = [
+        "preference",
+        "parameter",
+        "value",
+    ]
 
 class ParameterValueAdmin(admin.ModelAdmin):
     model = ParameterValue
@@ -53,8 +74,9 @@ class StatusValueAdmin(admin.ModelAdmin):
 
 admin.site.register(Parameter, ParameterAdmin)
 admin.site.register(ParameterCategory)
-admin.site.register(Preference)
-admin.site.register(Config)
+admin.site.register(Preference, PreferenceAdmin)
+admin.site.register(PreferenceChoice, PreferenceChoiceAdmin)
+admin.site.register(Config, ConfigAdmin)
 admin.site.register(WeatherCondition)
 admin.site.register(ParameterValue, ParameterValueAdmin)
 admin.site.register(ControllerStatus, ControllerStatusAdmin)
