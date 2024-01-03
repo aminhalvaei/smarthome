@@ -37,6 +37,13 @@ class WeatherConditionView(views.APIView):
         controller = get_object_or_404(Controller, physical_id=physical_id)
 
         if controller.is_manual is True:
+            controller_status, created = ControllerStatus.objects.update_or_create(
+                controller__physical_id=physical_id,
+                defaults={
+                    "controller": Controller.objects.get(physical_id=physical_id),
+                    "is_pending": True,
+                },
+            )
             parameters = StatusValue.objects.filter(
                 controller_status__controller__physical_id=physical_id
             )
