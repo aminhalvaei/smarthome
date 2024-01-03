@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     # third-parties
     'rest_framework',
+    'corsheaders',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'dj_rest_auth.registration',
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     
     # third-party
     'allauth.account.middleware.AccountMiddleware',
@@ -117,6 +119,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8001",
+    # Add other origins as needed
 ]
 
 REST_FRAMEWORK = {
