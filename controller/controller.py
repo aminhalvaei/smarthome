@@ -55,7 +55,7 @@ async def periodic_task():
 
 @app.on_event("startup")
 async def startup_event():
-    # register_controller()
+    register_controller()
     # Start the periodic task in the background
     asyncio.create_task(periodic_task())
 
