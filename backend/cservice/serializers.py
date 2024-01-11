@@ -11,7 +11,6 @@ class SetStatusSerializer(serializers.Serializer):
     physical_id = serializers.CharField(max_length=12)
 
 
-class RegisterControllerSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ("physical_id",)
-        model = Controller
+class RegisterControllerSerializer(serializers.Serializer):
+    physical_id = serializers.CharField(max_length=12)
+

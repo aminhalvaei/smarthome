@@ -84,11 +84,14 @@ class Controller(models.Model):
     is_registered = models.BooleanField(
         _("Registration status"), default=False, null=False
     )
+    is_register_pending = models.BooleanField(
+        _("Registration pending"), default=False, null=False
+    )
     created_at = models.DateTimeField(
         _("Creation date"), auto_now_add=True, editable=False
     )
     updated_at = models.DateTimeField(_("Last update"), auto_now=True)
-    registered_at = models.DateTimeField(_("Registration date"), null=True)
+    registered_at = models.DateTimeField(_("Registration date"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Controller")

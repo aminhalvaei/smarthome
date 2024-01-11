@@ -14,6 +14,7 @@ class ControllerAdmin(admin.ModelAdmin):
         "is_manual",
         "is_active",
         "is_registered",
+        "is_register_pending",
     ]
 
 

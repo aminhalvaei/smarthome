@@ -35,42 +35,50 @@ class WeatherConditionView(views.APIView):
         serializer.is_valid(raise_exception=True)
         physical_id = serializer.validated_data["physical_id"]
         controller = get_object_or_404(Controller, physical_id=physical_id)
-
-        if controller.is_manual is True:
-            controller_status, created = ControllerStatus.objects.update_or_create(
-                controller__physical_id=physical_id,
-                defaults={
-                    "controller": Controller.objects.get(physical_id=physical_id),
-                    "is_pending": True,
-                },
-            )
-            parameters = StatusValue.objects.filter(
-                controller_status__controller__physical_id=physical_id
-            )
-        else:
-            try:
-                # TODO make this controller_status instead of weather_condition
-                latest_update = controller.controller_status.updated_at 
-                if not self.is_weather_valid(latest_update):
+        
+        if controller.is_registered is True:
+            if controller.is_manual is True:
+                controller_status, created = ControllerStatus.objects.update_or_create(
+                    controller__physical_id=physical_id,
+                    defaults={
+                        "controller": Controller.objects.get(physical_id=physical_id),
+                        "is_pending": True,
+                    },
+                )
+                parameters = StatusValue.objects.filter(
+                    controller_status__controller__physical_id=physical_id
+                )
+            else:
+                try:
+                    # TODO make this controller_status instead of weather_condition
+                    latest_update = controller.controller_status.updated_at 
+                    if not self.is_weather_valid(latest_update):
+                        self.update_weather_data(physical_id)
+                except:
                     self.update_weather_data(physical_id)
-            except:
-                self.update_weather_data(physical_id)
 
-            parameters = StatusValue.objects.filter(
-                controller_status__controller__physical_id=physical_id
-            )
+                parameters = StatusValue.objects.filter(
+                    controller_status__controller__physical_id=physical_id
+                )
 
-        # Prepare the JSON response
-        response_data = {
-            "is_manual": controller.is_manual,
-            "parameters": [
-                {
-                    "title": parameter.parameter.title,
-                    "value": parameter.value,
-                }
-                for parameter in parameters
-            ],
-        }
+            # Prepare the JSON response
+            response_data = {
+                "is_registered": controller.is_registered,
+                "parameters": [
+                    {
+                        "title": parameter.parameter.title,
+                        "value": parameter.value,
+                    }
+                    for parameter in parameters
+                ],
+            }
+            
+        else:
+            response_data = {
+                "is_registered": controller.is_registered,
+                "message": "controller is not registered"
+            }
+            
 
         # Return the data as JSON using JsonResponse
         return Response(response_data, status=status.HTTP_200_OK)
@@ -214,6 +222,19 @@ class SetStatusView(views.APIView):
 
 
 # Routine 4
-class RegisterControllerView(generics.CreateAPIView):
-    queryset = Controller.objects.all()
-    serializer_class = RegisterControllerSerializer
+class RegisterControllerView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterControllerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        physical_id = serializer.validated_data["physical_id"]
+        
+        controller = get_object_or_404(Controller, physical_id=physical_id, is_register_pending=False)
+        controller.is_register_pending = True
+        controller.save()
+        
+        return Response(
+            {"message":"registration is pending please access your client and continue the process"},
+            status=status.HTTP_200_OK
+        )
+        
+
