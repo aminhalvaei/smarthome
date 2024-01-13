@@ -8,9 +8,17 @@ from configs import configs
 
 app = FastAPI()
 
+headers = {
+    'Authorization': f'Api-Key {configs.CONTROLLER_API_KEY}',
+}
+
 async def get_weather_condition():
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{configs.SERVER_URL}/api/cservice/weather-condition/", params={"physical_id": configs.CONTROLLER_PHYSICAL_ID})
+        response = await client.get(
+            f"{configs.SERVER_URL}/api/cservice/weather-condition/", 
+            params={"physical_id": configs.CONTROLLER_PHYSICAL_ID},
+            headers = headers
+            )
         response.raise_for_status()
         try:
             return response.json()
@@ -21,13 +29,21 @@ async def get_weather_condition():
 async def set_status():
     async with httpx.AsyncClient() as client:
         payload = {"physical_id": configs.CONTROLLER_PHYSICAL_ID}
-        response = await client.post(f"{configs.SERVER_URL}/api/cservice/set-status/", json=payload)
+        response = await client.post(
+            f"{configs.SERVER_URL}/api/cservice/set-status/",
+            json=payload,
+            headers = headers
+            )
         response.raise_for_status()
         
 async def register_controller():
     async with httpx.AsyncClient() as client:
         payload = {"physical_id": configs.CONTROLLER_PHYSICAL_ID}
-        response = await client.post(f"{configs.SERVER_URL}/api/cservice/register-controller/", json=payload)
+        response = await client.post(
+            f"{configs.SERVER_URL}/api/cservice/register-controller/",
+            json=payload,
+            headers = headers
+            )
         response.raise_for_status()
 
 async def periodic_task():

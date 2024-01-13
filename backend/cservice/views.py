@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from datetime import datetime
 import requests
 
+from .permissions import HasControllerAPIKey
 from weather import configs
 
 from weather.models import (
@@ -24,12 +25,10 @@ from .serializers import (
 
 # Create your views here.
 
-
-# Controller views
-
-
 # Routine 1
 class WeatherConditionView(views.APIView):
+    permission_classes = [HasControllerAPIKey]
+    
     def get(self, request, *args, **kwargs):
         serializer = WeatherRequestSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -193,6 +192,8 @@ class WeatherConditionView(views.APIView):
 # this view handles the responsibility to make this flag null
 # after getting acknoledgement from the controller
 class SetStatusView(views.APIView):
+    permission_classes = [HasControllerAPIKey]
+    
     def post(self, request, *args, **kwargs):
         serializer = SetStatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -223,6 +224,8 @@ class SetStatusView(views.APIView):
 
 # Routine 4
 class RegisterControllerView(views.APIView):
+    permission_classes = [HasControllerAPIKey]
+    
     def post(self, request, *args, **kwargs):
         serializer = RegisterControllerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
