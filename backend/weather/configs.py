@@ -6,7 +6,10 @@ WEATHER_VALID_DURATION = timedelta(milliseconds=5000)
 
 UNITS_OF_MEASUREMENT = "metric"
 
-SETABLE_PARAMETERS = ["temp", "humidity",]
+SETABLE_PARAMETERS = [
+    "temp",
+    "humidity",
+]
 
 CONSTANT_URL = "https://api.openweathermap.org/data/2.5/weather"
 

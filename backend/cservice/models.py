@@ -10,6 +10,7 @@ class ControllerAPIKey(AbstractAPIKey):
     controller = models.ForeignKey(
         Controller, on_delete=models.CASCADE, related_name="api_keys"
     )
+
     class Meta(AbstractAPIKey.Meta):
         verbose_name = "Controller API key"
         verbose_name_plural = "Controllers API keys"

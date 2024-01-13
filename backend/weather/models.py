@@ -84,12 +84,17 @@ class PreferenceChoice(models.Model):
 class Config(models.Model):
     preference = models.ForeignKey(Preference, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
-    value = models.ForeignKey(PreferenceChoice, on_delete=models.CASCADE, related_name="config")
+    value = models.ForeignKey(
+        PreferenceChoice, on_delete=models.CASCADE, related_name="config"
+    )
 
     class Meta:
         verbose_name = "Config"
         verbose_name_plural = "Configs"
-        unique_together = ("preference", "parameter",)
+        unique_together = (
+            "preference",
+            "parameter",
+        )
 
     def __str__(self):
         return f"{self.id}"
@@ -125,7 +130,9 @@ class ParameterValue(models.Model):
 
 
 class ControllerStatus(models.Model):
-    controller = models.OneToOneField(Controller, on_delete=models.CASCADE, related_name="controller_status")
+    controller = models.OneToOneField(
+        Controller, on_delete=models.CASCADE, related_name="controller_status"
+    )
     is_pending = models.BooleanField(default=True, blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

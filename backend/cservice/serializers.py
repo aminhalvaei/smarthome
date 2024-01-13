@@ -13,4 +13,3 @@ class SetStatusSerializer(serializers.Serializer):
 
 class RegisterControllerSerializer(serializers.Serializer):
     physical_id = serializers.CharField(max_length=12)
-

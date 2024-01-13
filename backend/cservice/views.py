@@ -25,16 +25,17 @@ from .serializers import (
 
 # Create your views here.
 
+
 # Routine 1
 class WeatherConditionView(views.APIView):
     permission_classes = [HasControllerAPIKey]
-    
+
     def get(self, request, *args, **kwargs):
         serializer = WeatherRequestSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         physical_id = serializer.validated_data["physical_id"]
         controller = get_object_or_404(Controller, physical_id=physical_id)
-        
+
         if controller.is_registered is True:
             if controller.is_manual is True:
                 controller_status, created = ControllerStatus.objects.update_or_create(
@@ -50,7 +51,7 @@ class WeatherConditionView(views.APIView):
             else:
                 try:
                     # TODO make this controller_status instead of weather_condition
-                    latest_update = controller.controller_status.updated_at 
+                    latest_update = controller.controller_status.updated_at
                     if not self.is_weather_valid(latest_update):
                         self.update_weather_data(physical_id)
                 except:
@@ -71,13 +72,12 @@ class WeatherConditionView(views.APIView):
                     for parameter in parameters
                 ],
             }
-            
+
         else:
             response_data = {
                 "is_registered": controller.is_registered,
-                "message": "controller is not registered"
+                "message": "controller is not registered",
             }
-            
 
         # Return the data as JSON using JsonResponse
         return Response(response_data, status=status.HTTP_200_OK)
@@ -193,7 +193,7 @@ class WeatherConditionView(views.APIView):
 # after getting acknoledgement from the controller
 class SetStatusView(views.APIView):
     permission_classes = [HasControllerAPIKey]
-    
+
     def post(self, request, *args, **kwargs):
         serializer = SetStatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -225,19 +225,21 @@ class SetStatusView(views.APIView):
 # Routine 4
 class RegisterControllerView(views.APIView):
     permission_classes = [HasControllerAPIKey]
-    
+
     def post(self, request, *args, **kwargs):
         serializer = RegisterControllerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         physical_id = serializer.validated_data["physical_id"]
-        
-        controller = get_object_or_404(Controller, physical_id=physical_id, is_register_pending=False)
+
+        controller = get_object_or_404(
+            Controller, physical_id=physical_id, is_register_pending=False
+        )
         controller.is_register_pending = True
         controller.save()
-        
-        return Response(
-            {"message":"registration is pending please access your client and continue the process"},
-            status=status.HTTP_200_OK
-        )
-        
 
+        return Response(
+            {
+                "message": "registration is pending please access your client and continue the process"
+            },
+            status=status.HTTP_200_OK,
+        )

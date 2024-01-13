@@ -6,16 +6,15 @@ from .models import ControllerAPIKey
 
 # Register your models here.
 
+
 class ControllerAPIkeyModelAdmin(APIKeyModelAdmin):
     model = ControllerAPIKey
-    list_display = [
-        *APIKeyModelAdmin.list_display,
-        'controller'
-    ]
+    list_display = [*APIKeyModelAdmin.list_display, "controller"]
     search_fields = [
         *APIKeyModelAdmin.search_fields,
-        'controller',
+        "controller",
     ]
-     
+
+
 admin.site.unregister(APIKey)
 admin.site.register(ControllerAPIKey, ControllerAPIkeyModelAdmin)

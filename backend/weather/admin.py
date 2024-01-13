@@ -37,7 +37,8 @@ class PreferenceAdmin(admin.ModelAdmin):
 class PreferenceChoiceAdmin(admin.ModelAdmin):
     model = PreferenceChoice
     list_display = ["title", "impact"]
-    
+
+
 class ConfigAdmin(admin.ModelAdmin):
     model = Config
     list_display = [
@@ -45,6 +46,7 @@ class ConfigAdmin(admin.ModelAdmin):
         "parameter",
         "value",
     ]
+
 
 class ParameterValueAdmin(admin.ModelAdmin):
     model = ParameterValue
