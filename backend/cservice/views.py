@@ -50,7 +50,6 @@ class WeatherConditionView(views.APIView):
                 )
             else:
                 try:
-                    # TODO make this controller_status instead of weather_condition
                     latest_update = controller.controller_status.updated_at
                     if not self.is_weather_valid(latest_update):
                         self.update_weather_data(physical_id)
