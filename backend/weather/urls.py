@@ -43,7 +43,7 @@ urlpatterns = [
         name="preference_choice_detail",
     ),
     path(
-        "preference-choice",
+        "preference-choice/",
         PreferenceChoiceList.as_view(),
         name="preference_choice_list",
     ),
