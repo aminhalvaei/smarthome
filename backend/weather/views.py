@@ -10,13 +10,26 @@ from . import configs
 from .models import (
     Parameter,
     ParameterCategory,
+    Preference,
+    PreferenceChoice,
+    Config,
     ParameterValue,
     WeatherCondition,
     ControllerStatus,
     StatusValue,
 )
 from home.models import Controller, Home, Location
-from .serializers import ParameterSerializer, ParameterCategorySerializer
+from .serializers import (
+    ParameterSerializer,
+    ParameterCategorySerializer,
+    PreferenceSerializer,
+    PreferenceChoiceSerializer,
+    ConfigSerializer,
+    WeatherConditionSerializer,
+    ParameterValueSerializer,
+    ControllerStatusSerializer,
+    StatusValueSerializer,
+)
 
 
 # Create your views here.
@@ -40,3 +53,73 @@ class ParameterCategoryList(generics.ListAPIView):
 class ParameterCategoryDetail(generics.RetrieveAPIView):
     queryset = ParameterCategory.objects.all()
     serializer_class = ParameterCategorySerializer
+
+
+class PreferenceList(generics.ListCreateAPIView):
+    queryset = Preference.objects.all()
+    serializer_class = PreferenceSerializer
+
+
+class PreferenceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Preference.objects.all()
+    serializer_class = PreferenceSerializer
+
+
+class PreferenceChoiceList(generics.ListAPIView):
+    queryset = PreferenceChoice.objects.all()
+    serializer_class = PreferenceChoiceSerializer
+
+
+class PreferenceChoiceDetail(generics.RetrieveAPIView):
+    queryset = PreferenceChoice.objects.all()
+    serializer_class = PreferenceChoiceSerializer
+
+
+class ConfigList(generics.ListCreateAPIView):
+    queryset = Config.objects.all()
+    serializer_class = ConfigSerializer
+
+
+class ConfigDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Config.objects.all()
+    serializer_class = ConfigSerializer
+
+
+class WeatherConditionList(generics.ListCreateAPIView):
+    queryset = WeatherCondition.objects.all()
+    serializer_class = WeatherConditionSerializer
+
+
+class WeatherConditionDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WeatherCondition.objects.all()
+    serializer_class = WeatherConditionSerializer
+
+
+class ParameterValueList(generics.ListCreateAPIView):
+    queryset = ParameterValue.objects.all()
+    serializer_class = ParameterValueSerializer
+
+
+class ParameterValueDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ParameterValue.objects.all()
+    serializer_class = ParameterValueSerializer
+
+
+class ControllerStatusList(generics.ListCreateAPIView):
+    queryset = ControllerStatus.objects.all()
+    serializer_class = ControllerStatusSerializer
+
+
+class ControllerStatusDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ControllerStatus.objects.all()
+    serializer_class = ControllerStatusSerializer
+
+
+class StatusValueList(generics.ListCreateAPIView):
+    queryset = StatusValue.objects.all()
+    serializer_class = StatusValueSerializer
+
+
+class StatusValueDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StatusValue.objects.all()
+    serializer_class = StatusValueSerializer
