@@ -10,13 +10,14 @@ from weather import configs
 
 from weather.models import (
     Parameter,
+    PreferenceChoice,
     ParameterCategory,
     ParameterValue,
     WeatherCondition,
     ControllerStatus,
     StatusValue,
 )
-from home.models import Controller, Home, Location
+from home.models import Controller, InsulationLevel, Home, Location
 from .serializers import (
     WeatherRequestSerializer,
     SetStatusSerializer,
@@ -65,8 +66,7 @@ class WeatherConditionView(views.APIView):
                 "is_registered": controller.is_registered,
                 "parameters": [
                     {
-                        "title": parameter.parameter.title,
-                        "value": parameter.value,
+                        f"{parameter.parameter.title}": parameter.value,
                     }
                     for parameter in parameters
                 ],
@@ -165,7 +165,7 @@ class WeatherConditionView(views.APIView):
                     "is_indoor": True,
                 },
             )
-            set_value = self.calculator(parameter_title, parameter_value)
+            set_value = self.calculator(physical_id, parameter_title, parameter_value)
             status_value_instance, created = StatusValue.objects.update_or_create(
                 controller_status=controller_status,
                 parameter=parameter,
@@ -180,9 +180,51 @@ class WeatherConditionView(views.APIView):
         current = datetime.now()
         return deadline >= current
 
-    def calculator(self, parameter_title, parameter_value):
-        return parameter_value * 100
-        # TODO complete this function and make mechanism that can retrive sutiable formula from a db
+    def calculator(self, physical_id, parameter_title, parameter_value):
+        if parameter_title == "temp":
+            range_impact = self.range_selector(parameter_value)
+            try:
+                insulation_impact = InsulationLevel.objects.get(
+                    home__controller__physical_id=physical_id
+                ).impact
+            except:
+                insulation_impact = 0
+
+            try:
+                preference_impact = PreferenceChoice.objects.get(
+                    config__preference__user__home__controller__physical_id=physical_id,
+                    config__parameter__title="temp",
+                ).impact
+            except:
+                preference_impact = 0
+
+            return (
+                configs.BASE_TEMP
+                * (1 + float(range_impact) / 100)
+                * (
+                    1
+                    + (
+                        self.impact_sign(parameter_value)
+                        * (float(insulation_impact) / 100)
+                    )
+                )
+                * (1 + float(preference_impact) / 100)
+            )
+
+        else:
+            return parameter_value
+
+    def range_selector(self, temp):
+        for (start, end), value in configs.TEMP_RANGES.items():
+            if start <= temp < end:
+                return value
+
+    def impact_sign(self, temp):
+        if temp <= configs.BASE_TEMP:
+            sign = 1
+        else:
+            sign = -1
+        return sign
 
 
 # Routine 3
