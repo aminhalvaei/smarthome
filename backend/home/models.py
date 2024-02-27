@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
 
@@ -40,6 +41,22 @@ class Location(models.Model):
     def __str__(self):
         return f"Latitude: {self.latitude}, Longitude: {self.longitude}"
 
+class InsulationLevel(models.Model):
+    title = models.CharField(max_length=64, blank=False, null=False, unique=True)
+    impact = models.DecimalField(
+        max_digits=3,
+        decimal_places=0,
+        default=0,
+        unique=True,
+        validators=[MinValueValidator(-50), MaxValueValidator(100)],
+    )
+    
+    class Meta:
+        verbose_name = "Insulation Level"
+        verbose_name_plural = "Insulation Levels"
+        
+    def __str__(self):
+        return self.title
 
 class Home(models.Model):
     alias_name = models.CharField(
@@ -52,6 +69,11 @@ class Home(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, blank=False, null=True
+    )
+    insulation_level = models.ForeignKey(
+        InsulationLevel, 
+        on_delete=models.SET_NULL,
+        null = True
     )
 
     class Meta:
