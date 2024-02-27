@@ -18,3 +18,14 @@ CONSTANT_URL = "https://api.openweathermap.org/data/2.5/weather"
 WEATHER_API_KEYS = [
     "46eb760d100fb6baef9ac0517c1123d8",
 ]
+
+BASE_TEMP = 24
+
+TEMP_RANGES = {
+    (float("-inf"), -10): 15,
+    (-10, 0): 10,
+    (0, 10): 5,
+    (10, 30): 0,
+    (30, 40): -5,
+    (40, float("inf")): -10,
+}
