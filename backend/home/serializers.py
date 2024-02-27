@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import City, Location, Home, Controller, Device
+from .models import City, Location, InsulationLevel, Home, Controller, Device
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -23,6 +23,15 @@ class LocationSerializer(serializers.ModelSerializer):
             "longitude",
         )
         model = Location
+        
+class InsulationLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            "id",
+            "title",
+            "impact",
+        )
+        model = InsulationLevel
 
 
 class HomeSerializer(serializers.ModelSerializer):

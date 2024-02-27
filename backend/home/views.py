@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-from .models import City, Location, Home, Controller, Device
+from .models import City, Location, InsulationLevel, Home, Controller, Device
 from .serializers import (
     CitySerializer,
     LocationSerializer,
+    InsulationLevelSerializer,
     HomeSerializer,
     ControllerSerializer,
     DeviceSerializer,
@@ -34,6 +35,16 @@ class LocationList(generics.ListCreateAPIView):
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+    
+    
+class InsulationLevelList(generics.ListCreateAPIView):
+    queryset = InsulationLevel.objects.all()
+    serializer_class = InsulationLevelSerializer
+    
+    
+class InsulationLevelDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InsulationLevel.objects.all()
+    serializer_class = InsulationLevelSerializer  
 
 
 class HomeList(generics.ListCreateAPIView):
