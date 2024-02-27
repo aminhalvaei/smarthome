@@ -55,6 +55,7 @@ class ControllerSerializer(serializers.ModelSerializer):
             "is_manual",
             "is_active",
             "is_registered",
+            "is_register_pending",
             "created_at",
             "registered_at",
         )

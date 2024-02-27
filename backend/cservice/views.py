@@ -275,8 +275,9 @@ class RegisterControllerView(views.APIView):
         controller = get_object_or_404(
             Controller, physical_id=physical_id, is_register_pending=False
         )
-        controller.is_register_pending = True
-        controller.save()
+        if controller.is_registered is False:
+            controller.is_register_pending = True
+            controller.save()
 
         return Response(
             {
